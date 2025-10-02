@@ -185,7 +185,7 @@ exp_dist <- textstat_dist(exp_dfm, method = "euclidean")
 print(exp_dist)
 
 ```
-When document lengths were short, position2 and postion4 were least distant than all other pairs (3.00). Now, position2 and position4 (at 5.10) are _more_ distant than position1/position2 (3.32) and position2/position3 (3.61.
+When document lengths were short, position2 and postion4 were least distant than all other pairs (3.00). Now, position2 and position4 (at 5.10) are _more_ distant than position1 and position2 (3.32) and position2 and position3 (3.61).
 
 Let's try cosine similarity, which normalizes for document length.
 
@@ -318,7 +318,7 @@ news_source_cos_dist_clust <- hclust(as.dist(apply(news_source_cos_sim, 1, funct
 
 # Plot
 ggdendrogram(news_source_cos_dist_clust, rotate = TRUE) +
-  labs( xlab="Similarity", title="Dendrogram of News Articles by Source, Cosine Dissimilarity")
+  labs(title="Dendrogram of News Articles by Source, Cosine Dissimilarity")
 ```
 
 At first glance, the patterns produced with the cosine dissimilarity approach seem to be pretty different from the Euclidean distance approach above. But let's examine the sources we examined earlier. Like Euclidean distance, the *New York Times* and *Washington Post* are occupying the same branch. Unlike Euclidean distance, the leaves are the smallest in the dendrogram, which suggests these two sources have the least dissimilarity (i.e., the greatest similarity). We again observe clustering among *St. Petersburg Times* and *Palm Beach Post*, but *Tampa Bay Times* is unique from these and the most dissimilar to the remaining sources. 
@@ -340,7 +340,7 @@ We can further distinguish groups to make source-topic comparisons.
 
 ```{r, message=FALSE}
 
-# Add "keyword"
+# Add "keyword" (from new metadata)
 news_dfm_sources_issue <- dfm_group(news_dfm, groups = interaction(Source, keyword))
 ndoc(news_dfm_sources_issue) # 79 groups
 
@@ -359,13 +359,13 @@ To explore support for this expectation, we'd first subset the two topics from t
 news_source_issue_cos_sim <- as.data.frame(as.matrix(news_source_issue_cos_sim))
 
 # Use grepl to subset to two issues
-cos_sim_ss_marriage <- news_source_issue_cos_sim[,grepl( "samesex" , names(news_source_issue_cos_sim) ) ]
+cos_sim_ss_marriage <- news_source_issue_cos_sim[,grepl( "samesex" , names(news_source_issue_cos_sim) ) ] # columns
 cos_sim_ss_marriage <- cos_sim_ss_marriage  %>% 
-  filter(grepl("samesex", rownames(cos_sim_ss_marriage)))
+  filter(grepl("samesex", rownames(cos_sim_ss_marriage))) # rows
 
-cos_sim_tob <- news_source_issue_cos_sim[,grepl( "tobacco" , names(news_source_issue_cos_sim) ) ]
+cos_sim_tob <- news_source_issue_cos_sim[,grepl( "tobacco" , names(news_source_issue_cos_sim) ) ] # columns
 cos_sim_tob <- cos_sim_tob  %>% 
-  filter(grepl("tobacco", rownames(cos_sim_tob)))
+  filter(grepl("tobacco", rownames(cos_sim_tob))) # rows
 
 ```
 
